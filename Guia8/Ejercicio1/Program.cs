@@ -6,154 +6,107 @@ using System.Threading.Tasks;
 
 namespace Ejercicio1
 {
-    internal class Program
+    public class Program
     {
-        #region variables y métodos del dominio
-        static int[] numeros=new int[100];
         static int contador = 0;
-
-        static void CargarValor(int valor)
+        static int cantidad = 0;
+        static int[] lista;
+        static void Main(string[] args)
         {
-            numeros[contador++] = valor;
+            int opcion = 0;
+            do
+            {
+                Console.WriteLine("\nSeleccione una opcion\n1 - Ingresar lista de numeros enteros\n2 - Mostrar orden del listado\n3 - Buscar un elemento\n4 - Salir");
+                opcion = Convert.ToInt32(Console.ReadLine());
+
+                switch (opcion)
+                {
+                    case 1:
+                        Console.WriteLine("\nIngrese cantidad total de numeros a ingresar");
+                        cantidad = Convert.ToInt32(Console.ReadLine());
+                        cantidadLista(cantidad);
+                        Console.WriteLine("\nIngrese numeros a guardar en el vector");
+                        guardarNumeros();                                    
+                    break;
+
+                    case 2:
+                        Console.WriteLine("\n");
+                        lista = burbuja(lista, contador);
+                        for (int i = 0; i < cantidad; i++)
+                        {
+                            Console.WriteLine(lista[i]);
+                        }
+                    break;
+
+                    case 3:
+                        Console.WriteLine("\nIngrese numero a buscar");
+                        int valor = Convert.ToInt32(Console.ReadLine());
+                        int pos = BusquedaSecuencial(lista, valor, contador);
+                        if (pos == -1)
+                        {
+                            Console.WriteLine("\nNumero no encontrado");
+                        }
+                        else
+                            Console.WriteLine("\nSe encontro el valor en la posicion {0}", pos);
+                    break;
+                        
+                    case 4:
+                        Console.WriteLine("\nSaliendo...");
+                    break;
+
+                    default:
+                        Console.WriteLine("\nError");
+                    break;
+                }
+            } while (opcion != 4);
         }
 
-        static void OrdenarListado()
+        static void cantidadLista(int cantidad) 
         {
-            for (int n = 0; n < contador - 1; n++)
+            lista = new int[cantidad];
+        }
+
+        static void guardarNumeros()
+        {
+            for (int i = 0; i < cantidad; i++)
             {
-                for (int m = n + 1; m < contador; m++)
+                lista[i] = Convert.ToInt32(Console.ReadLine());
+                contador++;
+            }
+        }
+
+        static int BusquedaSecuencial(int[] datos, int valor, int contador)
+        {
+            int i = 0;
+            int pos = -1;
+
+            while ((pos == -1) && (i < contador))
+            {
+                if (datos[i] == valor)
                 {
-                    if (numeros[n] > numeros[m])
+                    pos = i;
+                }
+                i++;
+            }
+            return pos;
+        }
+        
+        static int [] burbuja(int[] valores, int contador)
+        {
+            int aux, i, j;
+            for (i = 0; i < contador - 1; i++)
+            {
+                for (j = i + 1; j < contador; j++)
+                {
+                    if (valores[i] > valores[j])
                     {
-                        Intercambio(n, m);
+                        aux = valores[i];
+                        valores[i] = valores[j];
+                        valores[j] = aux;
                     }
                 }
             }
-        }
-
-        static void Intercambio(int n, int m)
-        {
-            int aux = numeros[n];
-            numeros[n] = numeros[m];
-            numeros[m] = aux;
-        }
-
-        static int BuscarPorValorSecuencial(int valor) 
-        {
-            int n = 0, idx=-1;
-            while (n < contador && idx == -1)
-            {
-                if (numeros[n] == valor)
-                    idx = n;
-                n++;
-            }
-            return idx;
-        }
-
-        #endregion
-
-        #region variables y métodos de la vista
-        static int MostrarMenuYSolicitarOpcion()
-        {
-            Console.Clear();
-            Console.WriteLine("\t\tMenú principal");
-
-            Console.WriteLine("\t1- Solicitar listado");
-            Console.WriteLine("\t2- Mostrar listado ordenado");
-            Console.WriteLine("\t3- Buscar valor");
-
-            int op =Convert.ToInt32(Console.ReadLine());
-            return op;
-        }
-
-        static void MostrarSolicitudCargaValores()
-        {
-            Console.Clear();
-            Console.WriteLine("\t\t Solicitud de listado de valores");
-
-            Console.WriteLine("ingrese valor(-1 sale)");
-            int val = Convert.ToInt32(Console.ReadLine());
-            while (val>-1)
-            {
-                CargarValor(val);
-
-                Console.WriteLine("ingrese valor(-1 sale)");
-                val = Convert.ToInt32(Console.ReadLine());
-            }
-
-            Console.WriteLine("presione una tecla para salir");
-            Console.ReadKey();
-        }
-
-        static void MostrarListadoOrdenado() 
-        {
-            Console.Clear();
-            Console.WriteLine("\t\t listado ordenado\n\n");
-
-            OrdenarListado();
-
-            Console.WriteLine("\nListado ordenado:");
-            for (int n = 0; n < contador; n++)
-            {
-                Console.Write("{0} -", numeros[n]);
-            }
-
-            Console.WriteLine("\n presione una tecla para volver al menú principal");
-            Console.ReadKey();
-        }
-
-        static void MostrarBusquedaValor() 
-        {
-            Console.Clear();
-            Console.WriteLine("\t\t Busqueda de valor");
-
-            Console.Write("Ingrese valor a buscar: ");
-            int valor=Convert.ToInt32(Console.ReadLine()); 
-            
-            int idx = BuscarPorValorSecuencial(valor);
-            if (idx > -1)
-            {
-                Console.WriteLine("Valor {0} fue encontra en la posicion: {1}", numeros[idx], idx+1);
-            }
-            else
-            {
-                Console.WriteLine("Valor {0} no NO encontrado", valor);
-            }
-
-            Console.WriteLine("presione una tecla para salir");
-            Console.ReadKey();
-        }
-        #endregion
-
-        static void Main(string[] args)
-        {
-            int op = 0;
-
-            op= MostrarMenuYSolicitarOpcion();
-            while (op != 0)
-            {
-                switch (op)
-                {
-                    case 1:
-                        {
-                            MostrarSolicitudCargaValores();
-                        }
-                        break;
-                    case 2:
-                        {
-                            MostrarListadoOrdenado();
-                        }break;
-                    case 3:
-                        {
-                            MostrarBusquedaValor();
-                        }
-                        break;
-                    default:
-                        { op = 0; }break;
-                }
-
-                op = MostrarMenuYSolicitarOpcion();
-            }
+            return valores;
         }
     }
 }
